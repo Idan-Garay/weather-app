@@ -2,31 +2,38 @@
 
 import { fetchWeather } from '@/actions'
 import { Weather } from '@/types/weather'
-import { useState } from 'react'
+import { FormEvent, useState } from 'react'
+import * as z from 'zod'
+import { Input } from '../InputText'
+
+export const WeatherFormSchema = z.object({
+  city: z.string().min(1),
+})
 
 export const WeatherForm = () => {
   const [city, setCity] = useState('New York City')
   const [weather, setWeather] = useState<Weather>()
-  console.log(weather)
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const formState = WeatherFormSchema.safeParse({ city })
+    if (formState.success) {
+      const weather = await fetchWeather(city)
+      setWeather(weather)
+    } else {
+      alert('City input has at least 1 character')
+    }
+  }
   return (
-    <form className="">
-      <input
+    <form onSubmit={handleSubmit}>
+      <Input
         type="text"
+        name="city"
         placeholder="City"
-        className="text-black"
-        defaultValue={city}
-        onChange={(e) => setCity(e.target.value)}
+        onChange={setCity}
+        value={city}
       />
-      <button
-        type="button"
-        onClick={async () => {
-          console.log('weather start')
-          const weather = await fetchWeather(city)
-          setWeather(weather)
-          console.log('weather end')
-        }}
-        className="text-white"
-      >
+      <button type="submit" className="text-white">
         Get the weather
       </button>
     </form>
