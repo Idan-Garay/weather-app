@@ -5,6 +5,7 @@ import { Weather } from '@/types/weather'
 import { FormEvent, useState } from 'react'
 import * as z from 'zod'
 import { Input } from '../InputText'
+import Image from 'next/image'
 
 export const WeatherFormSchema = z.object({
   city: z.string().min(1),
@@ -25,16 +26,26 @@ export const WeatherForm = () => {
     }
   }
   return (
-    <form onSubmit={handleSubmit}>
+    <form
+      onSubmit={handleSubmit}
+      className="flex items-center gap-3 absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+    >
       <Input
         type="text"
         name="city"
         placeholder="City"
+        className="text-white bg-transparent border-transparent border-b-white border rounded-none outline-none  text-3xl text-center"
         onChange={setCity}
         value={city}
       />
-      <button type="submit" className="text-white">
-        Get the weather
+      <button type="submit" className="group">
+        <Image
+          src="/img/partly-cloudy.png"
+          alt="partly cloudy"
+          height={64}
+          width={64}
+          className=" group-hover:-translate-y-1 transition duration-300"
+        />
       </button>
     </form>
   )
